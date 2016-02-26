@@ -20,7 +20,6 @@ var addonCount:Number = 0;
 var gridSize:Number = 24;
 var widgetMargin:Number = 4;
 var leftOffset:Number = 200;
-
 var grid:Array = [];
 
 
@@ -89,9 +88,9 @@ function registerAddon( dv:DistributedValue ) : Void {
 		return;
 	}
 	
-	var iconPath:String = regFields[4];
-	
 	// if mod has an icon, add dockable icon instance
+	var iconPath:String = regFields[4];
+
 	if ( iconPath != "undefined" && iconPath != "" ) {
 		var baseIcon:MovieClip = eval( iconPath );
 
@@ -118,6 +117,28 @@ function registerAddon( dv:DistributedValue ) : Void {
 			}
 		}
 
+		// push tio references into docked icon
+		dockIcon.tioAddon = addon;
+		dockIcon.tioClip = this;
+
+		// sample mouse handler wrappers
+		dockIcon.tioWrappedOnRollOver = dockIcon.onRollOver;
+		dockIcon.tioWrappedOnRollOut = dockIcon.onRollOut;
+
+		dockIcon.onRollOver = function() {
+			UtilsBase.PrintChatText( "slot rollover: " + this.tioAddon.name );
+
+			// call intended addon behaviour for this event
+			this.tioWrappedOnRollOver.apply( this, arguments );
+		}
+		
+		dockIcon.onRollOut = function() {
+			UtilsBase.PrintChatText( "slot rollout: " + this.tioAddon.name );
+			
+			// call intended addon behaviour for this event
+			this.tioWrappedOnRollOut.apply( this, arguments );
+		}
+		
 		// position dockable icon in dock
 		var dockPos:Point = new Point( leftOffset + (grid.length * gridSize) + (widgetMargin / 2), widgetMargin / 2 );
 		this.localToGlobal( dockPos );
@@ -138,6 +159,7 @@ function registerAddon( dv:DistributedValue ) : Void {
 		// add icons to addon properties
 		addon.baseIcon = baseIcon;
 		addon.dockIcon = dockIcon;
+		addon.slotBackground = slotBackground;
 		
 		// add dockable addon to grid list
 		grid.push( addon );
