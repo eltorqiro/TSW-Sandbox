@@ -118,25 +118,27 @@ function registerAddon( dv:DistributedValue ) : Void {
 		}
 
 		// push tio references into docked icon
-		dockIcon.tioAddon = addon;
-		dockIcon.tioClip = this;
-
-		// sample mouse handler wrappers
-		dockIcon.tioWrappedOnRollOver = dockIcon.onRollOver;
-		dockIcon.tioWrappedOnRollOut = dockIcon.onRollOut;
+		dockIcon.tioData = {
+			addon: addon,
+			tio: this,
+			
+			// wrap mouse event handlers so we can trigger our own code first
+			wrappedOnRollOver: dockIcon.onRollOver,
+			wrappedOnRollOut: dockIcon.onRollOut
+		};
 
 		dockIcon.onRollOver = function() {
-			UtilsBase.PrintChatText( "slot rollover: " + this.tioAddon.name );
+			UtilsBase.PrintChatText( "slot rollover: " + this.tioData.addon.name );
 
 			// call intended addon behaviour for this event
-			this.tioWrappedOnRollOver.apply( this, arguments );
+			this.tioData.wrappedOnRollOver.apply( this, arguments );
 		}
 		
 		dockIcon.onRollOut = function() {
-			UtilsBase.PrintChatText( "slot rollout: " + this.tioAddon.name );
+			UtilsBase.PrintChatText( "slot rollout: " + this.tioData.addon.name );
 			
 			// call intended addon behaviour for this event
-			this.tioWrappedOnRollOut.apply( this, arguments );
+			this.tioData.wrappedOnRollOut.apply( this, arguments );
 		}
 		
 		// position dockable icon in dock
@@ -159,7 +161,6 @@ function registerAddon( dv:DistributedValue ) : Void {
 		// add icons to addon properties
 		addon.baseIcon = baseIcon;
 		addon.dockIcon = dockIcon;
-		addon.slotBackground = slotBackground;
 		
 		// add dockable addon to grid list
 		grid.push( addon );
