@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <Root>
   <Module  name = "ElTorqiro_Sandbox"
-    movie       = "ElTorqiro_Sandbox\Sandbox.swf"
-    flags       = ""
+    movie       = "ElTorqiro_Sandbox\Module.swf"
+    flags       = "GMF_DONT_UNLOAD | GMF_PRELOAD"
     depth_layer = "Top"
     sub_depth   = "0"
     variable    = "ElTorqiro_Sandbox"
